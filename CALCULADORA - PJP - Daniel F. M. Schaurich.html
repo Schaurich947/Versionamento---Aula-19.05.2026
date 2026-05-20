@@ -68,6 +68,7 @@
             oninput="if(this.value.length > 10) this.value = this.value.slice(0, 10);">
         <button onclick="selecionarOperacao('x')">x</button>
         <button onclick="selecionarOperacao('/')">/</button>
+        <button onclick="selecionarOperacao('%')">%</button>
     </div>
     <div id="aviso-operacao" style="font-size: 12px; color: gray; margin-top: 5px;">Nenhuma operação selecionada.</div>
     <button class="button" onclick="calcular()">=</button>
@@ -124,8 +125,10 @@
                     document.getElementById("resultado").innerHTML = "Resultado: " + (n1 / n2);
                 }
             }
+            else if (operacaoGuardada === '%') {
+                document.getElementById("resultado").innerHTML = "Resultado: " + (n1 * n2 / 100);
         }
-
+    }
         // ==========================================
         // 2. FUNÇÕES DE AUTOMAÇÃO QUE ESCREVEM NA TELA
         // ==========================================
@@ -169,8 +172,11 @@
             executarTeste("Campos vazios na soma", "", "", "+", "Por favor, digite números válidos.");
             executarTeste("Letras em vez de números", "A", "B", "x", "Por favor, digite números válidos.");
             executarTeste("Divisão por zero", "10", "0", "/", "Não é possível dividir por zero.");
+            executarTeste("Porcentagem simples (15% de 200)", "200", "15", "%", "Resultado: 30");
+            executarTeste("Porcentagem com zero", "0", "50", "%", "Resultado: 0");
+            executarTeste("Porcentagem decimal (7.5% de 80)", "80", "7.5", "%", "Resultado: 6");
             executarTeste("Injeção de texto", "Carro", "10", "+", "Por favor, digite números válidos.");
-            executarTeste("11 casas decimais", "99999999999", "99999999999", "x", "Resultado: 9.999.999.999.800.000.000.001")
+            executarTeste("11 casas decimais", "99999999999", "99999999999", "x", "Resultado: 9999999999800000000001") //9.999.999.999.800.000.000.001
 
             // Limpa a calculadora no final
             document.getElementById("num1").value = "";
