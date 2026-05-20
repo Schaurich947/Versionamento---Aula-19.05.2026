@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Calculadora Simples de 04 Funções</title>
+    <title>Calculadora Simples de 04 Funções</title><!-- Complementada com ajuda de IA -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -38,7 +38,8 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             background-color: #f9f9f9;
-            display: none; /* Fica escondido até rodar os testes */
+            display: none;
+            /* Fica escondido até rodar os testes */
         }
 
         .passou {
@@ -54,19 +55,22 @@
 </head>
 
 <body>
-    <div><label><strong>Calculadora Simples de 04 Funções:</strong></label></div>
+    <div><label><strong>Calculadora Simples de 04(05) Funções:</strong></label></div>
     <br>
-    
-    <input id="num1" type="number" placeholder="Número 1" oninput="if(this.value.length > 10) this.value = this.value.slice(0, 10);">
-    <button onclick="somar()">+</button>
-    <button onclick="subtrair()">-</button>
-    
+
+    <input id="num1" type="number" placeholder="Número 1"
+        oninput="if(this.value.length > 10) this.value = this.value.slice(0, 10);">
+    <button onclick="selecionarOperacao('+')">+</button>
+    <button onclick="selecionarOperacao('-')">-</button>
+
     <div style="margin-top: 5px;">
-        <input id="num2" type="number" placeholder="Número 2" oninput="if(this.value.length > 10) this.value = this.value.slice(0, 10);">
-        <button onclick="multiplicar()">x</button>
-        <button onclick="dividir()">/</button>
+        <input id="num2" type="number" placeholder="Número 2"
+            oninput="if(this.value.length > 10) this.value = this.value.slice(0, 10);">
+        <button onclick="selecionarOperacao('x')">x</button>
+        <button onclick="selecionarOperacao('/')">/</button>
     </div>
-    
+    <div id="aviso-operacao" style="font-size: 12px; color: gray; margin-top: 5px;">Nenhuma operação selecionada.</div>
+    <button class="button" onclick="calcular()">=</button>
     <div id="resultado" style="margin-top: 15px; font-weight: bold; font-size: 18px; color: #0056b3;"></div>
 
     <hr style="margin-top: 25px;">
@@ -81,48 +85,44 @@
     </div>
 
     <script>
+        let operacaoGuardada = "";
+        function selecionarOperacao(operador) {
+            operacaoGuardada = operador;
+            document.getElementById("aviso-operacao").innerHTML = "Operação selecionada: <strong>" + operador + "</strong>";
+            document.getElementById("resultado").innerHTML = "";
+        }
         // ==========================================
         // 1. FUNÇÕES DA CALCULADORA
         // ==========================================
-        function somar() {
+        function calcular() {
+            if (operacaoGuardada === "") {
+                document.getElementById("resultado").innerHTML = "Por favor, selecione uma operação primeiro.";
+                return; 
+            }
+
             const n1 = parseFloat(document.getElementById("num1").value);
             const n2 = parseFloat(document.getElementById("num2").value);
+
             if (isNaN(n1) || isNaN(n2)) {
                 document.getElementById("resultado").innerHTML = "Por favor, digite números válidos.";
-            } else {
+                return;
+            }
+
+            if (operacaoGuardada === '+') {
                 document.getElementById("resultado").innerHTML = "Resultado: " + (n1 + n2);
-            }
-        }
-
-        function subtrair() {
-            const n1 = parseFloat(document.getElementById("num1").value);
-            const n2 = parseFloat(document.getElementById("num2").value);
-            if (isNaN(n1) || isNaN(n2)) {
-                document.getElementById("resultado").innerHTML = "Por favor, digite números válidos.";
-            } else {
+            } 
+            else if (operacaoGuardada === '-') {
                 document.getElementById("resultado").innerHTML = "Resultado: " + (n1 - n2);
-            }
-        }
-
-        function multiplicar() {
-            const n1 = parseFloat(document.getElementById("num1").value);
-            const n2 = parseFloat(document.getElementById("num2").value);
-            if (isNaN(n1) || isNaN(n2)) {
-                document.getElementById("resultado").innerHTML = "Por favor, digite números válidos.";
-            } else {
+            } 
+            else if (operacaoGuardada === 'x') {
                 document.getElementById("resultado").innerHTML = "Resultado: " + (n1 * n2);
-            }
-        }
-
-        function dividir() {
-            const n1 = parseFloat(document.getElementById("num1").value);
-            const n2 = parseFloat(document.getElementById("num2").value);
-            if (isNaN(n1) || isNaN(n2)) {
-                document.getElementById("resultado").innerHTML = "Por favor, digite números válidos.";
-            } else if (n2 === 0) { 
-                document.getElementById("resultado").innerHTML = "Não é possível dividir por zero.";
-            } else {
-                document.getElementById("resultado").innerHTML = "Resultado: " + (n1 / n2);
+            } 
+            else if (operacaoGuardada === '/') {
+                if (n2 === 0) {
+                    document.getElementById("resultado").innerHTML = "Não é possível dividir por zero.";
+                } else {
+                    document.getElementById("resultado").innerHTML = "Resultado: " + (n1 / n2);
+                }
             }
         }
 
@@ -134,10 +134,8 @@
             document.getElementById("num1").value = valor1;
             document.getElementById("num2").value = valor2;
 
-            if (operacao === '+') somar();
-            if (operacao === '-') subtrair();
-            if (operacao === 'x') multiplicar();
-            if (operacao === '/') dividir();
+           selecionarOperacao(operacao);
+            calcular();
 
             // Pega o resultado
             const resultadoNaTela = document.getElementById("resultado").innerHTML;
@@ -153,7 +151,7 @@
                 itemLista.className = "falhou";
                 itemLista.innerHTML = `❌ <strong>FALHOU:</strong> ${nomeDoCenario} <br><small>&nbsp;&nbsp;&nbsp;&nbsp;↳ Esperado: "${resultadoEsperado}" | Obtido: "${resultadoNaTela}"</small>`;
             }
-            
+
             // Joga a linha dentro do painel
             listaResultados.appendChild(itemLista);
         }
@@ -164,19 +162,24 @@
             document.getElementById("lista-resultados").innerHTML = "";
 
             // Executa os cenários
+            executarTeste("Cálculo sem operação", "5", "5", "", "Por favor, selecione uma operação primeiro.");
             executarTeste("Soma simples (2+2)", "2", "2", "+", "Resultado: 4");
             executarTeste("Subtração simples (10-5)", "10", "5", "-", "Resultado: 5");
             executarTeste("Multiplicação (3x4)", "3", "4", "x", "Resultado: 12");
             executarTeste("Campos vazios na soma", "", "", "+", "Por favor, digite números válidos.");
             executarTeste("Letras em vez de números", "A", "B", "x", "Por favor, digite números válidos.");
             executarTeste("Divisão por zero", "10", "0", "/", "Não é possível dividir por zero.");
+            executarTeste("Injeção de texto", "Carro", "10", "+", "Por favor, digite números válidos.");
             executarTeste("11 casas decimais", "99999999999", "99999999999", "x", "Resultado: 9.999.999.999.800.000.000.001")
-            
+
             // Limpa a calculadora no final
             document.getElementById("num1").value = "";
             document.getElementById("num2").value = "";
             document.getElementById("resultado").innerHTML = "";
+            document.getElementById("aviso-operacao").innerHTML = "Nenhuma operação selecionada.";
+            operacaoGuardada = "";
         }
     </script>
 </body>
+
 </html>
